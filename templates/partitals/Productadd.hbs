@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dhabe ka Saman add kare</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+</head>
+<body>
+    {{>navbar}}
+    <div class="form-container mt sign-in-form">
+        <div class="form-box sign-in-box">
+            <h2>Only Admin</h2>
+            <form action="/Productadd" method="post">
+            <div class="field">
+                    <i class="uil uil-restaurant"></i>
+                    <input type="text" name="productid" placeholder="Create Id" required>
+                </div>
+                <div class="field">
+                    <i class="uil uil-restaurant"></i>
+                    <input type="text" name="productname" placeholder="Enter Dishe" required>
+                </div>
+                <div class="field">
+                    <i class="uil uil-restaurant"></i>
+                    <input type="text" name="productplate" placeholder="Enter Plate" required>
+                </div>
+                <div class="field">
+                    <i class="uil uil-rupee-sign"></i>
+                    <input class="password-input" name="productprice" type="text" placeholder="Enter Rs." required>
+                </div>
+                <div class="forgot-link">
+                </div>
+                <input type="submit" class="submit-btn hover" value="Add">
+                 <div class="submit-btn hover"><a class="p-a" href="/Productmodyfy">Update</a>
+               
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let textInputs = document.querySelectorAll("input");
+        textInputs.forEach(textInput =>{
+            textInput.addEventListener("focus",()=>{
+                let parent = textInput.parentNode;
+                parent.classList.add("active");
+            });
+
+            textInput.addEventListener("blur",()=>{
+                let parent = textInput.parentNode;
+                parent.classList.remove("active");
+            });
+        })
+    </script>
+</body>
+</html>
+</body>
+</html>

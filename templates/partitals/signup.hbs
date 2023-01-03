@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+</head>
+<body>
+    {{>navbar}}
+    <div class="form-container  mt sign-in-form">
+        <div class="form-box  sign-in-box">
+            <h2>Signup</h2>
+            <form action="/signup" method="post">
+                <div class="field">
+                    <i class="uil uil-user"></i>
+                    <input type="text" name="fist_name" placeholder="User Name" required>
+                </div>
+                <div class="field">
+                    <i class="uil uil-at"></i>
+                    <input type="email" name="e_mail" placeholder="Email ID" required>
+                </div>
+                <div class="field">
+                    <i class="uil uil-lock-alt"></i>
+                    <input class="password-input" name="password" type="password" placeholder="Password" required>
+                </div>
+                <div class="field">
+                    <i class="uil uil-lock-alt"></i>
+                    <input class="password-input cpass" name="confirmpassword" type="password" placeholder="Confirm Password" required>
+                    <div class="eye-btn"><i class="uil uil-eye-slash"></i></div>
+                </div>
+                <div class="forgot-link">
+                    <a href="">Forgot password</a>
+                </div>
+                <input type="submit" class="submit-btn hover" value="Sign Up">
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let textInputs = document.querySelectorAll("input");
+        textInputs.forEach(textInput =>{
+            textInput.addEventListener("focus",()=>{
+                let parent = textInput.parentNode;
+                parent.classList.add("active");
+            });
+
+            textInput.addEventListener("blur",()=>{
+                let parent = textInput.parentNode;
+                parent.classList.remove("active");
+            });
+        })
+
+
+        let passwordInput = document.querySelector(".cpass")
+        let eyeBtn = document.querySelector(".eye-btn")
+
+        eyeBtn.addEventListener("click",()=>{
+            if(passwordInput.type === "password"){
+                passwordInput.type = "text";
+                eyeBtn.innerHTML = "<i class='uil uil-eye'></i>";
+            }
+            else{
+                passwordInput.type = "password";
+                eyeBtn.innerHTML = "<i class='uil uil-eye-slash'></i>";
+            }
+        });
+    </script>
+</body>
+</html>

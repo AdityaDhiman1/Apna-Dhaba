@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receptionist Login</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+</head>
+<body>
+    {{>navbar}}
+    <div class="form-container mt sign-in-form">
+        <div class="form-box sign-in-box">
+            <h2>Receptionist Login</h2>
+            <form action="/Receptionlogin" method="post">
+                <div class="field">
+                    <i class="uil uil-at"></i>
+                    <input type="email" name="email_id" placeholder="Email ID">
+                </div>
+                <div class="field">
+                    <i class="uil uil-lock-alt"></i>
+                    <input class="password-input" name="password" type="password" placeholder="password">
+                    <div class="eye-btn"><i class="uil uil-eye-slash"></i></div>
+                </div>
+                <div class="forgot-link">
+                    <a href="">Forgot password</a>
+                </div>
+                <input type="submit" class="submit-btn hover" value="Login">
+            </form>
+        </div>
+    </div>
+
+
+
+    <script>
+        let textInputs = document.querySelectorAll("input");
+        textInputs.forEach(textInput =>{
+            textInput.addEventListener("focus",()=>{
+                let parent = textInput.parentNode;
+                parent.classList.add("active");
+            });
+
+            textInput.addEventListener("blur",()=>{
+                let parent = textInput.parentNode;
+                parent.classList.remove("active");
+            });
+        })
+
+
+        let passwordInput = document.querySelector(".password-input")
+        let eyeBtn = document.querySelector(".eye-btn")
+
+        eyeBtn.addEventListener("click",()=>{
+            if(passwordInput.type === "password"){
+                passwordInput.type = "text";
+                eyeBtn.innerHTML = "<i class='uil uil-eye'></i>";
+            }
+            else{
+                passwordInput.type = "password";
+                eyeBtn.innerHTML = "<i class='uil uil-eye-slash'></i>";
+            }
+        })
+    </script>
+</body>
+</html>
+</body>
+</html>

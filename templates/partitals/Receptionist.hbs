@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dishes</title>
+    <link rel="stylesheet" href="product.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+</head>
+
+<body>
+    {{>navbar}}
+    <h2>Our Product</h2>
+    <div class="form-container  sign-in-form">
+                    <table class="table-box">
+                        <thead class="f-s">
+                            <td>P.No</td>
+                            <td>P.Name</td>
+                            <td>P.Plate</td>
+                            <td>p.price</td>
+                        </thead>
+                            {{#each item}}
+                        <tr class="t-t">
+                                <td>{{__v}}</td>
+                                <td>{{productname}}</td>
+                                <td>{{productplate}}</td>
+                                <td>{{productprice}}</td>
+                        </tr>
+                            {{/each}}
+                            
+                    </table>
+                <a class="bmit-btn hover rec-btn" style="text-decoration: none; height: 30px; color:white;" href="/Receptionist/BillGenerate">Pay</a>
+                
+        </div>
+</body>
+
+</html>

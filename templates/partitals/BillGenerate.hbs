@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bill Generate</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+</head>
+<body>
+    {{>navbar}}
+    <div class="form-container mt sign-in-form">
+        <div class="form-box sign-in-box">
+            <h2>Bill Generate</h2>
+            <form action="/BillGenerate" method="post">
+                <div class="field">
+                   <i class="uil uil-user"></i>
+                    <input type="text" name="customore_name" placeholder="Customore Name" required>
+                </div>
+                <div class="field">
+                    <i class="uil uil-phone"></i>
+                    <input class="password-input" name="mobail_no" type="text" placeholder="Mobail No"required >
+                    <div class="eye-btn"><i class="uil uil-dialpad"></i></i></div>
+                </div>
+                <div class="field">
+                   <i class="uil uil-restaurant"></i>
+                    <input type="text" name="dishes" placeholder="Dishes" required>
+                </div>
+                 <div class="field">
+                   <i class="uil uil-rupee-sign"></i>
+                    <input type="text" name="amount" placeholder="Amount"required >
+                </div>
+                <input type="submit" class="submit-btn hover" value="Make Bill">
+            </form>
+        </div>
+    </div>
+
+
+
+    <script>
+        let textInputs = document.querySelectorAll("input");
+        textInputs.forEach(textInput =>{
+            textInput.addEventListener("focus",()=>{
+                let parent = textInput.parentNode;
+                parent.classList.add("active");
+            });
+
+            textInput.addEventListener("blur",()=>{
+                let parent = textInput.parentNode;
+                parent.classList.remove("active");
+            });
+        })
+
+
+        
+    </script>
+</body>
+</html>
+</body>
+</html>

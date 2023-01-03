@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dhaba</title>
+    <link rel="stylesheet" href="../navbar.css">
+    <link rel="stylesheet" href="../login.css">
+</head>
+
+<body>
+
+    {{#if product}}
+    {{>Product}}
+    {{/if}}
+
+    {{#if Productmodyfy}}
+    {{>Productmodyfy}}
+    {{/if}}
+
+    {{#if olduser}}
+    {{>olduser}}
+    {{/if}}
+
+    {{#if Adminlogin}}
+    {{>Adminlogin}}
+    {{/if}}
+
+    {{#if Adminpanel}}
+    {{>Adminpanel}}
+    {{/if}}
+
+    {{#if Home}}
+    {{>Home}}
+    {{/if}}
+
+    {{#if BillGenerate}}
+    {{>BillGenerate}}
+    {{/if}}
+
+    {{#if CustomerList}}
+    {{>CustomerList}}
+    {{/if}}
+
+    
+    {{#if Productadd}}
+    {{>Productadd}}
+    {{/if}}
+
+    {{#if Receptionist}}
+    {{>Receptionist}}
+    {{/if}}
+
+    {{#if Receptionlogin}}
+    {{>Receptionlogin}}
+    {{/if}}
+
+    {{#if signup}}
+    {{>signup}}
+    {{/if}}
+
+    {{#if login}}
+    {{>login}}
+    {{/if}}
+
+    {{#if Productedit}}
+    {{>productedit}}
+    {{/if}}
+
+    {{#if delete}}
+    {{>delete}}
+    {{/if}}
+
+    {{#if _404}}
+    {{>404}}
+    {{/if}}
+</body>
+
+</html>

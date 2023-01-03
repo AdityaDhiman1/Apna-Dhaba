@@ -1,0 +1,135 @@
+@import url('https:fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;');
+
+*{
+    margin: 0;
+    font-family: 'Popins',sans-serif;
+    box-sizing: border-box;
+    padding: 0;
+}
+.mt{
+    margin-top: 60px;
+}
+body{
+   background: #fff;
+}
+
+.form-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;
+
+}
+
+.form-box{
+    z-index: 999;
+    background: #fff;
+    box-shadow: 0 5px 25px rgb(0 0 0 /15%);
+    width: 350px;
+    padding: 50px 40px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.form-box h2{
+    font-size: 2rem;
+    margin-bottom: 40px;
+    font-weight: 700;
+}
+.form-box .field{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 2px solid #eee;
+    margin-bottom: 25px;
+}
+.form-box .field.active{
+
+    border-bottom: 2px solid #0065ff;
+    transition: 0.3s ease;
+
+}
+
+.form-box .field input{
+    border: none;
+    outline: none;
+    background: none;
+    width: 100%;
+    font-size: 1.25em;
+    padding-bottom: 5px;
+}
+
+.form-box .field i{
+    color: #828da0;
+    margin-right: 10px;
+    font-size: 1.3em;
+    padding-bottom: 5px;
+}
+.form-box .field.active i{
+    color: #0065ff;
+    transition: 0.3s ease;
+}
+
+::placeholder{
+    color: #828da0;
+    font-size: 0.85em;
+}
+
+
+.eye-btn{
+    cursor: pointer;
+
+}
+
+.eye-btn i:hover{
+    color: #0065ff;
+    transition: 0.3s ease;
+}
+
+
+.forgot-link{
+    text-align: right;
+    transform: translateY(-10px);
+}
+
+.forgot-link a{
+    color: #0065ff;
+    font-size: 0.85em;
+    text-decoration: none;
+    font-weight: 500;
+
+}
+
+
+.submit-btn{
+    background: #0065ff;
+    color: #fff;
+    border: none;
+    outline: none;
+    width: 120px;
+    padding: 10px 30px;
+    font-size: 0.85em;
+    border-radius: 5px;
+    font-weight: 500;
+    margin-top: 5px;
+    cursor: pointer;
+}
+
+.hover:hover{
+    color: #eee;
+    background-color: #828da0;
+    box-shadow: 0 5px 25px rgb(0 0 0 /15%);
+
+}
+
+.error{
+    font-size: 4em;
+    color: #828da0;
+   
+}
+
+
+.p-a{
+    text-decoration: none;
+    color: #fff;
+}
