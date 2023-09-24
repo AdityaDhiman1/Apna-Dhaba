@@ -7,12 +7,12 @@ const session = require("express-session")
 const mongosession = require("connect-mongodb-session")(session)
 const bcrypt = require("bcryptjs")
 
-
-const mongoURI = "mongodb://localhost:27017/MINOR_PROJECT";
+// upload today
+const mongoURI = "mongodb://127.0.0.1:27017/MINOR_PROJECT";
 
 mongoose.set('strictQuery', false)
 
-mongoose.connect("mongodb://localhost:27017/MINOR_PROJECT",
+mongoose.connect("mongodb://127.0.0.1:27017/MINOR_PROJECT",
     {
         useNewUrlParser: true,
         useUnifiedTopology: true
@@ -22,10 +22,10 @@ mongoose.connect("mongodb://localhost:27017/MINOR_PROJECT",
 
         if (err) {
 
-            console.error('connection is not  successfully')
+            console.error('Database is not connected')
         }
         else {
-            console.error('connection is successfully')
+            console.error('Database is connected ')
 
         }
 
@@ -95,7 +95,7 @@ const isAurth = (req, res, next) => {
         next()
     }
     else {
-        res.redirect('Adminlogin')
+        res.redirect(302,'Adminlogin')
     }
 }
 
@@ -120,7 +120,7 @@ app.get("/login", (req, res) => {
     res.render("index", { login: true })
 })
 app.post("/login", (req, res) => {
-    res.redirect("index", { login: true })
+    res.redirect(302,"index", { login: true })
 })
 app.get("/signup", (req, res) => {
     res.render('index', { signup: true });
@@ -138,10 +138,10 @@ app.post("/signup", (req, res) => {
         })
         let registerd = signup.save();
         msg = "Signup Sccessful"
-        res.redirect("/Login?msg=" + msg)
+        res.redirect(302,"/Login?msg=" + msg)
 
     } else {
-        res.redirect("pas not match?msg=" + msg)
+        res.redirect(404,"pas not match?msg=" + msg)
         msg = "Password does not matched"
     }
 })
@@ -158,9 +158,9 @@ app.post("/Adminlogin", (req, res) => {
         } else {
             if (password === data[0].password) {
                 req.session.isAurth = true;
-                res.redirect("Adminpanel");
+                res.redirect(302,"Adminpanel");
             } else {
-                res.redirect("Adminlogin")
+                res.redirect(302,"Adminlogin")
             }
         }
     })
@@ -172,7 +172,7 @@ app.get("/Adminpanel", isAurth,  (req, res) => {
 app.post("/logout", (req, res) => {
     req.session.destroy((err) => {
         if (err) throw err;
-        return res.redirect("Adminlogin")
+        return res.redirect(302,"Adminlogin")
     })
 })
 app.get("/Productadd", isAurth, (req, res) => {
@@ -187,7 +187,7 @@ app.post("/Productadd", (req, res) => {
     })
     
     product.save();
-    res.redirect("/Productadd?msg=product add successfully")
+    res.redirect(302,"/Productadd?msg=product add successfully")
 })
 app.get("/Productedit", isAurth,(req, res) => {
     Product.find({}, (err, data) => {
@@ -217,7 +217,7 @@ app.post("/Productmodyfy", (req, res) => {
             productplate: req.body.product_plate,
             productprice: req.body.product_price
         }
-    }, res.redirect("Productmodyfy"),
+    }, res.redirect(302,"Productmodyfy"),
     );
 
 })
@@ -225,7 +225,7 @@ app.get("/Receptionlogin", (req, res) => {
     res.render("index", { Receptionlogin: true });
 })
 app.post("/Receptionlogin", (req, res) => {
-    res.redirect("Receptionist")
+    res.redirect(302,"Receptionist")
 })
 app.get("/Receptionist", (req, res) => {
     Product.find({}, (err, data) => {
@@ -244,7 +244,7 @@ app.get("/Receptionist", (req, res) => {
     })
 })
 app.post("/Receptionist", (req, res) => {
-    res.redirect("BillGenerate")
+    res.redirect(302,"BillGenerate")
 })
 app.get("/Receptionist/BillGenerate", (req, res) => {
     res.render("index", { BillGenerate: true })
@@ -260,7 +260,7 @@ app.post("/BillGenerate", (req, res) => {
     })
     bil.save();
     msg = "Bill Generated Successfully"
-    res.redirect('Receptionist')
+    res.redirect(302,'Receptionist')
 
 
 
@@ -280,10 +280,10 @@ app.post("/CustomerList", (req, res) => {
 
         if (customore_name = req.body.Customor, mobail_no = req.body.Customor_mobile) {
 
-            res.redirect("olduser")
+            res.redirect(302,"olduser")
         }
         else {
-            res.redirect("/Receptionist/BillGenerate")
+            res.redirect(302,"/Receptionist/BillGenerate")
         }
     })
 
@@ -314,7 +314,7 @@ app.post("/delete", (req, res) => {
     
     Product.deleteOne({ productid: req.body.delete_id }, (err, data) => {
     })
-    res.redirect("Productedit?msg=deleted Succeefully")
+    res.redirect(302,"Productedit?msg=deleted Succeefully")
 })
 app.get("*", (req, res) => {
     res.render('index', { _404: true })

@@ -20,7 +20,9 @@ body{
     font-size: 1rem;
 
 }
-
+.form-box-height{
+    height: 70vh;
+}
 .form-box{
     z-index: 999;
     background: #fff;
