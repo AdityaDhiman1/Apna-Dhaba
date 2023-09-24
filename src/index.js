@@ -6,30 +6,17 @@ const mongoose = require('mongoose')
 const session = require("express-session")
 const mongosession = require("connect-mongodb-session")(session)
 const bcrypt = require("bcryptjs")
+const dotenv = require("dotenv")
+dotenv.config()
 
-// upload today
-const mongoURI = "mongodb://127.0.0.1:27017/MINOR_PROJECT";
+
 
 mongoose.set('strictQuery', false)
 
-mongoose.connect("mongodb://127.0.0.1:27017/MINOR_PROJECT",
-    {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    },
-    (err) => {
-
-
-        if (err) {
-
-            console.error('Database is not connected')
-        }
-        else {
-            console.error('Database is connected ')
-
-        }
-
-    })
+mongoose.connect(process.env.MONOGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => console.log('Database connect...',)).catch((err) => console.log(err.message))
 
 let signupSchema = new mongoose.Schema({
     fist_name: { type: String },
@@ -57,15 +44,14 @@ let BillSchema = new mongoose.Schema({
 let Bill = new mongoose.model("Bill", BillSchema, "Customore Details")
 
 let DeletSchema = new mongoose.Schema({
-    product_id: {
-        type: String
-    },
-    product_name: {
-        type: String
-    },
     deleter_name: {
-        type:String
-    }
+       type: String,
+   },
+    delete_product: [{
+        productname: { type: String },
+        productprice: { type: String },
+        productplate: { type: String },
+    }]
 })
 let Delete = new mongoose.model("Delete", DeletSchema, "Deleted Produtct")
 
@@ -79,7 +65,7 @@ app.use(express.static(path.join(__dirname, "../public/css")))
 hbs.registerPartials(path.join(__dirname, "../templates/partitals"))
 
 const store = new mongosession({
-    uri: mongoURI,
+    uri: process.env.MONOGO_URI,
     collection: 'mysession'
 });
 
@@ -87,7 +73,7 @@ app.use(session({
     secret: "This is Key",
     resave: false,
     saveUninitialized: false,
-    store:store
+    store: store
 }))
 
 const isAurth = (req, res, next) => {
@@ -95,230 +81,278 @@ const isAurth = (req, res, next) => {
         next()
     }
     else {
-        res.redirect(302,'Adminlogin')
+        res.redirect(302, 'Adminlogin')
     }
 }
 
 
-app.get("/Product", (req, res) => {
-    Product.find({}, (err, data) => {
-        if (err) {
-            console.log(err)
-        }
-        else {
-            let j = 1;
-            for (let obj of data) {
-                obj.__v = j;
-                j = j + 1;
-            }
-            res.render("index", { product: true, item: data });
 
+app.get("/", async (req, res) => {
+    try {
+        let data = await Product.find({})
+        let j = 1;
+        for (let obj of data) {
+            obj.__v = j;
+            j = j + 1;
         }
-    })
+        res.render("index", { product: true, item: data });
+
+    } catch (error) {
+        console.log("error in Product", error.message)
+
+    }
 })
 app.get("/login", (req, res) => {
     res.render("index", { login: true })
 })
 app.post("/login", (req, res) => {
-    res.redirect(302,"index", { login: true })
+    res.redirect(302, "index", { login: true })
 })
 app.get("/signup", (req, res) => {
     res.render('index', { signup: true });
 })
-app.post("/signup", (req, res) => {
-    let password = req.body.password;
-    let confirm_password = req.body.confirmpassword;
-    if (password === confirm_password) {
-        let msg = "";
-        let signup = new Signup({
-            fist_name: req.body.fist_name,
-            e_mail: req.body.e_mail,
-            password: password,
-            confirm_password: confirm_password
-        })
-        let registerd = signup.save();
-        msg = "Signup Sccessful"
-        res.redirect(302,"/Login?msg=" + msg)
-
-    } else {
-        res.redirect(404,"pas not match?msg=" + msg)
-        msg = "Password does not matched"
+app.post("/signup", async (req, res) => {
+    try {
+        let password = req.body.password;
+        let confirm_password = req.body.confirmpassword;
+        if (password === confirm_password) {
+            let msg = "";
+            let signup = await new Signup({
+                fist_name: req.body.fist_name,
+                e_mail: req.body.e_mail,
+                password: password,
+                confirm_password: confirm_password
+            })
+            let registerd = await signup.save();
+            msg = "Signup Successful"
+            res.redirect(302, "/Login?msg=" + msg)
+        } else {
+            res.redirect(404, "pas not match?msg=" + msg)
+            msg = "Password does not matched"
+        }
+    } catch (error) {
+        console.log(error.message);
     }
 })
 app.get("/Adminlogin", (req, res) => {
     res.render("index", { Adminlogin: true })
 })
-app.post("/Adminlogin", (req, res) => {
-
-    let email_id = req.body.email_id;
-    let password = req.body.password;
-    Signup.find({ e_mail: email_id }, (err, data) => {
-        if (err) {
-            console.log(err);
-        } else {
-            if (password === data[0].password) {
-                req.session.isAurth = true;
-                res.redirect(302,"Adminpanel");
+app.post("/Adminlogin", async (req, res) => {
+    try {
+        let email_id = req.body.email_id;
+        let password = req.body.password;
+        await Signup.find({ e_mail: email_id }, (err, data) => {
+            if (err) {
+                console.log(err);
             } else {
-                res.redirect(302,"Adminlogin")
+                if (password === data[0].password) {
+                    req.session.isAurth = true;
+                    res.redirect(302, "Adminpanel");
+                } else {
+                    res.redirect(302, "Adminlogin")
+                }
             }
-        }
-    })
+        })
+    } catch (error) {
+        console.log(error.message)
+    }
 })
-app.get("/Adminpanel", isAurth,  (req, res) => {
+app.get("/Adminpanel", isAurth, (req, res) => {
     res.render("index", { Adminpanel: true })
 })
 
 app.post("/logout", (req, res) => {
-    req.session.destroy((err) => {
-        if (err) throw err;
-        return res.redirect(302,"Adminlogin")
-    })
+    try {
+        req.session.destroy((err) => {
+            if (err) throw err;
+            return res.redirect(302, "Adminlogin")
+        })
+    } catch (error) {
+        console.log(error.message)
+    }
+
 })
 app.get("/Productadd", isAurth, (req, res) => {
     res.render("index", { Productadd: true })
 })
-app.post("/Productadd", (req, res) => {
-    let product = new Product({
-        productname: req.body.productname,
-        productprice: req.body.productprice,
-        productplate: req.body.productplate,
-        productid: req.body.productid
-    })
-    
-    product.save();
-    res.redirect(302,"/Productadd?msg=product add successfully")
+app.post("/Productadd", async (req, res) => {
+    try {
+        let { productname, productprice, productplate, productid } = req.body;
+        let product = new Product({
+            productname: productname,
+            productprice: productprice,
+            productplate: productplate,
+            productid: productid
+        })
+        await Product.insertMany([product])
+        res.redirect(302, "/Productadd?msg=product add successfully")
+    } catch (error) {
+        console.log(error.message)
+    }
 })
-app.get("/Productedit", isAurth,(req, res) => {
-    Product.find({}, (err, data) => {
-        if (err) {
-            console.log(err)
+app.get("/Productedit", isAurth, async (req, res) => {
+    try {
+        let data = await Product.find({})
+        let j = 1;
+        for (let obj of data) {
+            obj.__v = j;
+            j = j + 1;
         }
-        else {
-            let j = 1;
-            for (let obj of data) {
-                obj.__v = j;
-                j = j + 1;
-            }
-            res.render("index", { item: data, Productedit: true });
+        res.render("index", { item: data, Productedit: true });
+    } catch (error) {
+        console.log(error.message)
 
-        }
-    })
+    }
 })
-app.get("/Productmodyfy", isAurth,(req, res) => {
-    res.render("index", { Productmodyfy: true });
+app.get("/Productmodyfy/:id", isAurth, async (req, res) => {
+
+    try {
+        let data = await Product.findById(req.params.id)
+        res.render("index", { Productmodyfy: true, item: data });
+
+    } catch (error) {
+        console.log(error.message);
+    }
+
 })
-app.post("/Productmodyfy", (req, res) => {
 
 
-    Product.update({ productid: req.body.product_id }, {
-        $set: {
-            productname: req.body.product_name,
-            productplate: req.body.product_plate,
-            productprice: req.body.product_price
-        }
-    }, res.redirect(302,"Productmodyfy"),
-    );
+app.post("/Productmodyfy", async (req, res) => {
+    try {
+        await Product.findByIdAndUpdate(
+            { "_id": req.body.product_id },
+            {
+                $set: {
+                    productname: req.body.product_name,
+                    productplate: req.body.product_plate,
+                    productprice: req.body.product_price
+                }
+            })
+            res.redirect(302,"Productedit?Update Success")
+    } catch (error) {
+        console.log(error.message);
+
+    }
 
 })
 app.get("/Receptionlogin", (req, res) => {
     res.render("index", { Receptionlogin: true });
 })
 app.post("/Receptionlogin", (req, res) => {
-    res.redirect(302,"Receptionist")
+    res.redirect(302, "Receptionist")
 })
-app.get("/Receptionist", (req, res) => {
-    Product.find({}, (err, data) => {
-        if (err) {
-            console.log(err)
-        }
-        else {
-            let j = 1;
-            for (let obj of data) {
-                obj.__v = j;
-                j = j + 1;
+app.get("/Receptionist", async (req, res) => {
+    try {
+        await Product.find({}, (err, data) => {
+            if (err) {
+                console.log(err)
             }
-            res.render("index", { item: data, Receptionist: true });
-
-        }
-    })
+            else {
+                let j = 1;
+                for (let obj of data) {
+                    obj.__v = j;
+                    j = j + 1;
+                }
+                res.render("index", { item: data, Receptionist: true });
+            }
+        })
+    } catch (error) {
+        console.log(error.message)
+    }
 })
 app.post("/Receptionist", (req, res) => {
-    res.redirect(302,"BillGenerate")
+    res.redirect(302, "BillGenerate")
 })
 app.get("/Receptionist/BillGenerate", (req, res) => {
     res.render("index", { BillGenerate: true })
 })
-app.post("/BillGenerate", (req, res) => {
-    let msg = "";
-    let bil = new Bill({
-        customore_name: req.body.customore_name,
-        mobail_no: req.body.mobail_no,
-        dishes: req.body.dishes,
-        amount: req.body.amount
+app.post("/BillGenerate", async (req, res) => {
+    try {
+        let msg = "";
+        let bil = await new Bill({
+            customore_name: req.body.customore_name,
+            mobail_no: req.body.mobail_no,
+            dishes: req.body.dishes,
+            amount: req.body.amount
 
-    })
-    bil.save();
-    msg = "Bill Generated Successfully"
-    res.redirect(302,'Receptionist')
+        })
+        await bil.save();
+        msg = "Bill Generated Successfully"
+        res.redirect(302, 'Receptionist')
+    } catch (error) {
+        console.log(error.message)
 
-
+    }
 
 })
-app.get("/CustomerList", (req, res) => {
-    Bill.find({}, (err, data) => {
-        if (err) {
-            console.log("err")
-        } else {
-            res.render("index", { items: data, CustomerList: true });
-        }
-    })
+app.get("/CustomerList", async (req, res) => {
+    try {
+        await Bill.find({}, (err, data) => {
+            if (err) {
+                console.log("err")
+            } else {
+                res.render("index", { items: data, CustomerList: true });
+            }
+        })
+    } catch (error) {
+        console.log(error.message)
+
+    }
 })
-app.post("/CustomerList", (req, res) => {
+app.post("/CustomerList", async (req, res) => {
 
-    Bill.find({ customore_name: req.body.Customor, mobail_no: req.body.Customor_mobile }, (err, data) => {
+    try {
+        await Bill.find({ customore_name: req.body.Customor, mobail_no: req.body.Customor_mobile }, (err, data) => {
 
-        if (customore_name = req.body.Customor, mobail_no = req.body.Customor_mobile) {
+            if (customore_name = req.body.Customor, mobail_no = req.body.Customor_mobile) {
 
-            res.redirect(302,"olduser")
-        }
-        else {
-            res.redirect(302,"/Receptionist/BillGenerate")
-        }
-    })
+                res.redirect(302, "olduser")
+            }
+            else {
+                res.redirect(302, "/Receptionist/BillGenerate")
+            }
+        })
+
+    } catch (error) {
+        console.log(error.message)
+
+    }
 
 })
 app.get("/olduser", (req, res) => {
     res.render("index", { olduser: true });
 })
-app.get('/delete',  isAurth, (req, res) => {
-    Product.find({}, (err, data) => {
-        if (err) {
-            console.log(err)
-        }
-        else {
+app.get('/delete/:id', isAurth, async (req, res) => {
 
+    try {
+        let data  = await Product.findById(req.params.id);
+        res.render("index", { item: data, delete: true })
+    } catch (error) {
+        console.log(error.message)
 
-            res.render("index", { item: data, delete: true })
-
-        }
-    })
+    }
 })
-app.post("/delete", (req, res) => {
-    let deletdata = new Delete ({
-        product_name: req.body.product_name,
-        product_id: req.body.product_id,
-        deleter_name:req.body.deleter_name
-    })
-    deletdata.save()
+
+
+app.post("/delete", async (req, res) => {
+try {
+    await Product.findByIdAndDelete(req.body.product_id)
+    res.redirect(302,"Productedit?success")
     
-    Product.deleteOne({ productid: req.body.delete_id }, (err, data) => {
-    })
-    res.redirect(302,"Productedit?msg=deleted Succeefully")
+} catch (error) {
+    console.log(error.message)
+    
+}
+
 })
+
+
 app.get("*", (req, res) => {
     res.render('index', { _404: true })
 })
+
+
+
 app.listen(3000, () => {
-    console.log("Server has been started port 3000")
+    console.log("Server has been started port 3000",)
 })

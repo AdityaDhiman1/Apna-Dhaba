@@ -12,26 +12,29 @@
 
 <body>
     {{>navbar}}
-    <h2>Our Product</h2>
+    <h2>Our Product</h2> 
     <div class="form-container  sign-in-form">
-                    <table class="table-box">
-                        <thead class="f-s">
-                            <td>P.No</td>
-                            <td>P.Name</td>
-                            <td>P.Plate</td>
-                            <td>p.price</td>
-                            <td>opration</td>
-                        </thead>
-                            {{#each item}}
-                        <tr class="t-t">
-                                <td>{{__v}}</td>
-                                <td>{{productname}}</td>
-                                <td>{{productplate}}</td>
-                                <td>{{productprice}}</td>
-                                <td><a href="/productmodyfy">Edit</a> <a href="/delete">Delete</a></td>
-                        </tr>
-                            {{/each}}
-                    </table>
+        <table class="table-box">
+            <thead class="f-s">
+                <td>P.No</td>
+                <td>P.Name</td>
+                <td>P.Plate</td>
+                <td>p.price</td>
+                <td>opration</td>
+            </thead>
+                {{#each item}}
+                <tr class="t-t">
+                    <td>{{__v}}</td>
+                    <td>{{productname}}</td>
+                    <td>{{productplate}}</td>
+                    <td>{{productprice}}</td>
+                    <td>
+                    <a href="/productmodyfy/{{_id}}">Edit</a> 
+                    <a href="/delete/{{_id}}">Delete</a>
+                    </td>
+                </tr>
+                {{/each}}
+        </table>
 
     </div>
 </body>
